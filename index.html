@@ -259,23 +259,22 @@ footer{background:var(--ink);padding:36px 48px;display:flex;justify-content:spac
   .about{padding:64px 0}
   .about-inner{
     grid-template-columns:1fr;
-    gap:36px;
+    gap:32px;
   }
-  /* mobile: ảnh trên, text dưới */
   .about-img-wrap{
     display:block;
     grid-column:1;
     grid-row:1;
-    width:56vw;        /* thu nhỏ, không full width */
-    max-width:240px;   /* cap lại trên màn lớn hơn */
-    margin:0 auto;     /* canh giữa */
+    width:44vw;
+    max-width:180px;
+    margin:0 auto;
   }
   .about-copy{
     grid-column:1;
     grid-row:2;
   }
   .about-img{
-    aspect-ratio:2/3;  /* giữ đúng tỉ lệ 772x1165 */
+    aspect-ratio:2/3;
     border-radius:3px;
   }
   .about-img-wrap::before{display:none}
@@ -297,6 +296,97 @@ footer{background:var(--ink);padding:36px 48px;display:flex;justify-content:spac
 
   .container{padding:0 24px}
 }
+
+/* ── DISCLAIMER MODAL ────────────────── */
+.disc-overlay{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(38,33,28,0.75);
+  backdrop-filter:blur(4px);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+.disc-overlay.open{display:flex}
+.disc-modal{
+  background:var(--white);
+  border-radius:4px;
+  max-width:680px;
+  width:100%;
+  max-height:85vh;
+  overflow-y:auto;
+  position:relative;
+}
+.disc-modal::-webkit-scrollbar{width:4px}
+.disc-modal::-webkit-scrollbar-track{background:var(--linen)}
+.disc-modal::-webkit-scrollbar-thumb{background:var(--sage-lt);border-radius:2px}
+.disc-head{
+  position:sticky;top:0;
+  background:var(--ink);
+  padding:24px 32px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  z-index:1;
+}
+.disc-head h3{
+  font-family:'Playfair Display',serif;
+  font-size:18px;font-weight:300;
+  color:var(--cream);
+  letter-spacing:0.02em;
+}
+.disc-close{
+  background:none;border:none;
+  color:var(--mist);
+  font-size:22px;line-height:1;
+  cursor:pointer;padding:4px 8px;
+  transition:color 0.2s;
+  font-family:'Jost',sans-serif;
+}
+.disc-close:hover{color:var(--cream)}
+.disc-body{padding:32px 32px 40px}
+.disc-section{margin-bottom:28px}
+.disc-section:last-child{margin-bottom:0}
+.disc-section h4{
+  font-family:'Jost',sans-serif;
+  font-size:10px;font-weight:600;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--warm);
+  margin-bottom:10px;
+}
+.disc-section p{
+  font-size:13px;font-weight:300;
+  color:var(--stone);line-height:1.85;
+}
+.disc-divider{
+  height:1px;background:var(--linen);
+  margin:0 0 28px;
+}
+/* CTA disclaimer link */
+.cta-disclaimer{
+  font-size:11px;font-weight:300;
+  color:var(--mist);
+  margin-top:8px;
+}
+.cta-disclaimer a{
+  color:var(--stone);
+  text-decoration:underline;
+  text-underline-offset:3px;
+  cursor:pointer;
+  transition:color 0.2s;
+}
+.cta-disclaimer a:hover{color:var(--ink)}
+/* footer disclaimer link */
+.footer-disc{
+  font-size:11px;font-weight:300;
+  letter-spacing:0.06em;
+  color:rgba(245,241,235,0.25);
+  cursor:pointer;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  transition:color 0.2s;
+  background:none;border:none;
+}
+.footer-disc:hover{color:rgba(245,241,235,0.5)}
 </style>
 </head>
 <body>
@@ -461,6 +551,7 @@ footer{background:var(--ink);padding:36px 48px;display:flex;justify-content:spac
     <div class="cta-btn-group reveal reveal-delay-3">
       <a href="https://wa.me/61481811172" class="btn-dark">Send Oanh a Message</a>
       <p class="cta-note">No commitment. No pressure. Just a conversation.</p>
+      <p class="cta-disclaimer">By messaging, you agree to our <a onclick="openDisc()">Disclaimer</a>.</p>
     </div>
   </div>
 </section>
@@ -468,6 +559,7 @@ footer{background:var(--ink);padding:36px 48px;display:flex;justify-content:spac
 <footer>
   <span class="footer-name">Oanh</span>
   <span class="footer-meta">Reiki Practitioner &amp; Intuitive Guide &nbsp;·&nbsp; Melbourne &nbsp;·&nbsp; © 2026</span>
+  <button class="footer-disc" onclick="openDisc()">Disclaimer</button>
 </footer>
 
 <script>
@@ -478,6 +570,77 @@ const io = new IntersectionObserver((entries) => {
   });
 }, {threshold:0.12});
 revealEls.forEach(el => io.observe(el));
+</script>
+
+<!-- DISCLAIMER MODAL -->
+<div class="disc-overlay" id="discOverlay" onclick="closeDiscOutside(event)">
+  <div class="disc-modal" id="discModal">
+    <div class="disc-head">
+      <h3>Disclaimer</h3>
+      <button class="disc-close" onclick="closeDisc()">✕</button>
+    </div>
+    <div class="disc-body">
+
+      <div class="disc-section">
+        <h4>General Information</h4>
+        <p>The information provided on this website and through the services offered by Oanh (the "Practitioner") is for general informational and educational purposes only. It is not intended as, and should not be considered, medical advice, diagnosis, or treatment. The Practitioner is not a medical doctor, psychologist, or other licensed healthcare professional.</p>
+      </div>
+      <div class="disc-divider"></div>
+
+      <div class="disc-section">
+        <h4>Complementary Nature of Services</h4>
+        <p>Energy healing, intuitive guidance, Reiki, Pellowah, Channelling &amp; Automatic Writing, and Processing &amp; Integration services are complementary and alternative practices. They are intended to support your well-being and personal growth, and to work in conjunction with, not as a substitute for, conventional medical or psychological care. Always consult with a qualified healthcare professional for any health concerns or before making any decisions related to your health and well-being.</p>
+      </div>
+      <div class="disc-divider"></div>
+
+      <div class="disc-section">
+        <h4>No Guarantees or Specific Outcomes</h4>
+        <p>The Practitioner makes no guarantees, representations, or warranties regarding the effectiveness, results, or outcomes of any services provided. Individual experiences and results may vary significantly. The success of any session or practice depends on various factors, including but not limited to the individual's commitment, openness, and unique circumstances.</p>
+      </div>
+      <div class="disc-divider"></div>
+
+      <div class="disc-section">
+        <h4>Client Responsibility</h4>
+        <p>Clients are solely responsible for their own physical, mental, and emotional well-being, decisions, and actions. By engaging with the Practitioner's services, you acknowledge that you are voluntarily participating and assume all risks associated with these services. The Practitioner encourages you to exercise your own judgment and discretion.</p>
+      </div>
+      <div class="disc-divider"></div>
+
+      <div class="disc-section">
+        <h4>Australian Consumer Law</h4>
+        <p>Nothing in this disclaimer is intended to exclude, restrict, or modify any rights or remedies you may have under the Australian Consumer Law or any other applicable legislation that cannot be lawfully excluded, restricted, or modified.</p>
+      </div>
+      <div class="disc-divider"></div>
+
+      <div class="disc-section">
+        <h4>Consent</h4>
+        <p>By using this website and/or engaging in services with the Practitioner, you signify your understanding of and agreement to this disclaimer.</p>
+      </div>
+      <div class="disc-divider"></div>
+
+      <div class="disc-section">
+        <h4>Contact</h4>
+        <p>If you have any questions about this disclaimer, please contact Oanh directly.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function openDisc(){
+  document.getElementById('discOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDisc(){
+  document.getElementById('discOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+function closeDiscOutside(e){
+  if(e.target===document.getElementById('discOverlay')) closeDisc();
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') closeDisc();
+});
 </script>
 </body>
 </html>
